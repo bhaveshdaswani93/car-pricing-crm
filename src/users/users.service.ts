@@ -5,12 +5,11 @@ import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
-
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   async create(email, password) {
-     const user = this.repo.create({ email, password });
-     return this.repo.save(user);
+    const user = this.repo.create({ email, password });
+    return this.repo.save(user);
   }
 
   async findOne(id: number) {
@@ -20,8 +19,29 @@ export class UsersService {
   async find(email: string) {
     return this.repo.find({
       where: {
-        email
-      }
-    })
+        email,
+      },
+    });
+  }
+
+  async update(id: number, data: Partial<User>) {
+    const user = await this.findOne(id);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    Object.assign(user, data);
+    return this.repo.save(user);
+  }
+
+  async remove(id: number) {
+    const user = await this.findOne(id);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return this.repo.remove(user);
   }
 }
