@@ -17,6 +17,7 @@ import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
 
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -31,7 +32,7 @@ export class UsersController {
     return this.userService.find(email);
   }
 
-  @Serialize(UserDto)
+
   @Get('/user/:id')
   async getUser(@Param('id') id: string) {
     return this.userService.findOne(parseInt(id));
