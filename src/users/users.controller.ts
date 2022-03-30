@@ -10,16 +10,21 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   Session,
+  Request,
 } from '@nestjs/common';
 import { Serialize, SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
+import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
+import { User } from './user.entity';
 import { UsersService } from './users.service';
 
 @Controller('auth')
 @Serialize(UserDto)
+// @UseInterceptors(CurrentUserInterceptor)
 export class UsersController {
   constructor(
     private userService: UsersService,
@@ -37,6 +42,12 @@ export class UsersController {
   async signin(@Body() body: CreateUserDto, @Session() session) {
     const user = await this.authService.signin(body.email, body.password);
     session.userid = user.id;
+    return user;
+  }
+
+  @Get('whoami')
+  async whoami(@CurrentUser() user: User, @Request() request) {
+    console.log(request.session);
     return user;
   }
 
