@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -11,4 +11,9 @@ export class User {
   @Column()
   @Exclude()
   password: string;
+
+  @BeforeInsert()
+  beforeInsert() {
+    console.log('Trying to insert')
+  }
 }
