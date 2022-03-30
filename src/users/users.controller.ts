@@ -11,7 +11,9 @@ import {
   ClassSerializerInterceptor,
   Session,
   Request,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { Serialize, SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -45,6 +47,7 @@ export class UsersController {
     return user;
   }
 
+  @UseGuards(AuthGuard)
   @Get('whoami')
   async whoami(@CurrentUser() user: User, @Request() request) {
     console.log(request.session);
