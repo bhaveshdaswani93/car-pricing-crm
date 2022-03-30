@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Session,
 } from '@nestjs/common';
 import { Serialize, SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
@@ -26,16 +27,26 @@ export class UsersController {
   ) {}
 
   @Post('/signup')
-  async signup(@Body() body: CreateUserDto) {
+  async signup(@Body() body: CreateUserDto, @Session() session) {
    const user = await this.authService.signup(body.email, body.password);
+   session.userid = user.id;
    return user;
   }
 
   @Post('/signin')
-  async signin(@Body() body: CreateUserDto) {
+  async signin(@Body() body: CreateUserDto, @Session() session) {
     const user = await this.authService.signin(body.email, body.password);
+    session.userid = user.id;
     return user;
   }
+
+  @Post('signout')
+  async signout(@Session() session) {
+    session.userid = null;
+    return "Signed out successfully.";
+  }
+
+
 
   @Get('/users')
   async getAllUsers(@Query('email') email: string) {
