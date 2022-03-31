@@ -14,7 +14,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { Serialize, SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
+import {
+  Serialize,
+  SerializeInterceptor,
+} from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -30,14 +33,14 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(
     private userService: UsersService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   @Post('/signup')
   async signup(@Body() body: CreateUserDto, @Session() session) {
-   const user = await this.authService.signup(body.email, body.password);
-   session.userid = user.id;
-   return user;
+    const user = await this.authService.signup(body.email, body.password);
+    session.userid = user.id;
+    return user;
   }
 
   @Post('/signin')
@@ -57,16 +60,13 @@ export class UsersController {
   @Post('signout')
   async signout(@Session() session) {
     session.userid = null;
-    return "Signed out successfully.";
+    return 'Signed out successfully.';
   }
-
-
 
   @Get('/users')
   async getAllUsers(@Query('email') email: string) {
     return this.userService.find(email);
   }
-
 
   @Get('/user/:id')
   async getUser(@Param('id') id: string) {
