@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
@@ -63,4 +63,38 @@ describe('AuthService', () => {
     expect(userSignin).toBeDefined();
     expect(userSignin.email).toEqual(email);
   });
+
+  it('does not allow to signin user with invalid email', async () => {
+      const email = 'a@a.com';
+      const password = '123456';
+      fakeUserService.find = () => Promise.resolve([]);
+      await expect(authService.signin(email, password)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+  it('does not allow to signin user with invalid password', async () => {
+    const email = 'a@a.com';
+    const password = '123456';
+    const user = await authService.signup(email, password);
+    fakeUserService.find = () =>
+      Promise.resolve([
+        { email: user.email, password: user.password, id: 1 },
+      ] as User[]);
+
+      await expect(authService.signin(email, "147852")).rejects.toThrow(
+        BadRequestException,
+      );
+  });
+
+  it('does hash the password during signup', async () => {
+    const email = 'a@a.com';
+    const password = 'asdfasfd';
+    const user = await authService.signup(email, password);
+    expect(user.password).not.toEqual(password);
+    const [salt, hash] = user.password.split('.');
+    expect(salt).toBeDefined();
+    expect(hash).toBeDefined();
+  })
+
 });
