@@ -13,11 +13,11 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 import {
   Serialize,
   SerializeInterceptor,
-} from 'src/interceptors/serialize.interceptor';
+} from '../interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateUserDto } from './dtos/create-user.dto';
