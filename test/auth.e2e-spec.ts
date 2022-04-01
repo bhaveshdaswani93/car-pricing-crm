@@ -31,4 +31,26 @@ describe('AuthController', () => {
         expect(email).toEqual(emailPass);
       });
   });
+
+  it('signup a user and get current user info', async () => {
+    const email = 'a@b.com';
+    const password = 'adfc';
+    const res = await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({
+        email,
+        password,
+      })
+      .expect(201);
+    const cookie = res.get('Set-Cookie');
+
+    await request(app.getHttpServer())
+      .get('/auth/whoami')
+      .set('Cookie', cookie)
+      .expect(200)
+      .then((res) => {
+        const { email } = res.body;
+        expect(email).toEqual(email);
+      });
+  });
 });
