@@ -1,4 +1,4 @@
-import { IsNumber, IsString, Max, Min } from "class-validator";
+import { IsLatitude, isLatitude, IsLongitude, IsNumber, IsString, Max, Min } from "class-validator";
 
 
 export class CreateReportDto {
@@ -19,9 +19,11 @@ export class CreateReportDto {
   year: number;
 
   @IsNumber()
+  @IsLatitude()
   lat: number;
 
   @IsNumber()
+  @IsLongitude()
   long: number;
 
   @IsNumber()
