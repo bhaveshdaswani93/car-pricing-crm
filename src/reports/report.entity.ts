@@ -33,7 +33,7 @@ export class Report {
   @Column({
     default: false
   })
-  reported: boolean
+  approved: boolean
 
 
 }
